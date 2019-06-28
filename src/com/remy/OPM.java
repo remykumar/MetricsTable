@@ -29,15 +29,15 @@ public class OPM {
         getOPMaverage("12:40", "13:40");
     }
 
-    public static int getOPMaverage(String starttime, String endtime) throws Exception{
-        int startHour = Integer.parseInt(starttime.substring(0,2));
-        int startMinute = Integer.parseInt(starttime.substring(3,5));
+    public static int getOPMaverage(String starttime, String endtime) throws Exception {
+        int startHour = Integer.parseInt(starttime.substring(0, 2));
+        int startMinute = Integer.parseInt(starttime.substring(3, 5));
 
-        int endHour  = Integer.parseInt(endtime.substring(0,2));
-        int endMinute  = Integer.parseInt(endtime.substring(3,5));
+        int endHour = Integer.parseInt(endtime.substring(0, 2));
+        int endMinute = Integer.parseInt(endtime.substring(3, 5));
         int count = 60;
 
-        for ( int k=startHour; k <= endHour; k++) {
+        for (int k = startHour; k <= endHour; k++) {
             //int hourno =
             DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
             Date date = new Date();
@@ -45,108 +45,109 @@ public class OPM {
             //  System.out.println(l);
 
             // System.out.println(dateFormat.format(date));
-            String formURL = "http://lrviewer.papajohns.com:8080/onlineviewer/hour_minutes.jsp?a=-1&date="+dateFormat.format(date)+"&hourno="+k;
-            // System.out.println(formURL);
-            URL lrconnect = new URL(formURL);
-            // URL lrconnect = new URL("http://lrviewer.papajohns.com:8080/onlineviewer/hour_minutes.jsp?a=-1&date=06/21/2019&hourno=10");
-            BufferedReader in = new BufferedReader(new InputStreamReader(lrconnect.openStream()));
+
+
+
+                String formURL = "http://lrviewer.papajohns.com:8080/onlineviewer/hour_minutes.jsp?a=-1&date=" + dateFormat.format(date) + "&hourno=" + k;
+                // System.out.println(formURL);
+            BufferedReader in = null;
+            try {
+                URL lrconnect = new URL(formURL);
+                // URL lrconnect = new URL("http://lrviewer.papajohns.com:8080/onlineviewer/hour_minutes.jsp?a=-1&date=06/21/2019&hourno=10");
+                in = new BufferedReader(new InputStreamReader(lrconnect.openStream()));
+            } catch (Exception e) {
+               // e.printStackTrace();
+                return 1200;
+
+            }
 
             String inputLine;
-            ArrayList<String> list = new ArrayList<>();
-            int maxopm = 0;
-            int minopm = 3000;
-            int totalopm = 0;
-            float averageopm;
+                ArrayList<String> list = new ArrayList<>();
+                int maxopm = 0;
+                int minopm = 3000;
+                int totalopm = 0;
+                float averageopm;
 
-            ArrayList<String> allOPMLines = new ArrayList<>();
+                ArrayList<String> allOPMLines = new ArrayList<>();
 
-            while ((inputLine = in.readLine()) != null) {
 
-                if(inputLine.contains("<td bgcolor=\"#ccffff\" valign=bottom align=right style=\"font-weight: bold;\">")) {
-                    allOPMLines.add(inputLine);
+                while ((inputLine = in.readLine()) != null) {
+
+                    if (inputLine.contains("<td bgcolor=\"#ccffff\" valign=bottom align=right style=\"font-weight: bold;\">")) {
+                        allOPMLines.add(inputLine);
+                    }
+
+
                 }
 
 
+                ArrayList<String> onlyOrders = new ArrayList<>();
+                ArrayList<String> ordered = new ArrayList<>();
+                ArrayList<Integer> finalOPM = new ArrayList<>();
 
 
-            }
+                for (int i = 0; i < allOPMLines.size(); i = i + 3) {
+                    //System.out.println(allOPMLines.get(i));
+                    onlyOrders.add(allOPMLines.get(i));
+                }
+
+                for (int i = 0; i <= 55; i = i + 5) {
+                    ordered.add(onlyOrders.get(i));
+                }
+
+                for (int i = 1; i <= 56; i = i + 5) {
+                    ordered.add(onlyOrders.get(i));
+                }
+
+                for (int i = 2; i <= 57; i = i + 5) {
+                    ordered.add(onlyOrders.get(i));
+                }
 
 
+                for (int i = 3; i <= 58; i = i + 5) {
+                    ordered.add(onlyOrders.get(i));
+                }
 
-            ArrayList<String> onlyOrders = new ArrayList<>();
-            ArrayList<String>  ordered = new ArrayList<>();
-            ArrayList<Integer> finalOPM = new ArrayList<>();
-
-
-            for(int i = 0; i < allOPMLines.size(); i=i+3) {
-                //System.out.println(allOPMLines.get(i));
-                onlyOrders.add(allOPMLines.get(i));
-            }
-
-            for(int i = 0; i <= 55; i=i+5) {
-                ordered.add(onlyOrders.get(i));
-            }
-
-            for(int i = 1; i <= 56; i=i+5) {
-                ordered.add(onlyOrders.get(i));
-            }
-
-            for(int i = 2; i <= 57; i=i+5) {
-                ordered.add(onlyOrders.get(i));
-            }
+                for (int i = 4; i <= 59; i = i + 5) {
+                    ordered.add(onlyOrders.get(i));
+                }
 
 
-            for(int i = 3; i <= 58; i=i+5) {
-                ordered.add(onlyOrders.get(i));
-            }
+                //  System.out.println(onlyOrders.get(5));
 
-            for(int i = 4; i <= 59; i=i+5) {
-                ordered.add(onlyOrders.get(i));
-            }
+                for (String a : ordered) {
+                    int startIndex = 77;
+                    int endIndex = a.indexOf("</td>");
+                    String parseOPM = a.substring(startIndex, endIndex).trim().replace(",", "");
 
-
-
-
-
-            //  System.out.println(onlyOrders.get(5));
-
-            for (String a : ordered) {
-                int startIndex = 77;
-                int endIndex = a.indexOf("</td>");
-                String parseOPM = a.substring(startIndex, endIndex).trim().replace(",", "");
-
-                finalOPM.add(Integer.parseInt(parseOPM));
-                // System.out.println(parseOPM);
-            }
+                    finalOPM.add(Integer.parseInt(parseOPM));
+                    // System.out.println(parseOPM);
+                }
 
            /* for (int i : finalOPM) {
                 System.out.println(i);
             }*/
 
-           if (k == startHour) {
-               for (int i = startMinute; i < 60; i++) {
-                   //System.out.println(finalOPM.get(i));
-                   opm_total.add(finalOPM.get(i));
-               }
-           }
-
-            if (k == endHour) {
-                for (int i = endMinute; i >= 0; i--) {
-                    //System.out.println(finalOPM.get(i));
-                    opm_total.add(finalOPM.get(i));
+                if (k == startHour) {
+                    for (int i = startMinute; i < 60; i++) {
+                        //System.out.println(finalOPM.get(i));
+                        opm_total.add(finalOPM.get(i));
+                    }
                 }
+
+                if (k == endHour) {
+                    for (int i = endMinute; i >= 0; i--) {
+                        //System.out.println(finalOPM.get(i));
+                        opm_total.add(finalOPM.get(i));
+                    }
+                }
+
+
             }
 
 
-
-
-
+            return getAverage(opm_total);
         }
-
-
-
-        return getAverage(opm_total);
-    }
 
 
     public static int getAverage(ArrayList<Integer> opm_total) {

@@ -602,7 +602,7 @@ public class Metrics  {
         String esxCPU = scan.nextLine();
 
         System.out.println("Test "+testNumber+ "("+OPM.getOPMaverage(testStartTime, testEndTime)+ " Orders/min) - "+rwdRelease+" / "+pobsRelease+ " ("+virtUsers+" users) - "+testDesc);
-        System.out.println(testDate+","+testStartTime+" - "+testEndTime);
+        System.out.println(testDate+", "+testStartTime+" - "+testEndTime);
         System.out.println(submitOrder + " ms");
         System.out.println(checkOut + " ms");
         System.out.println(storeSearch + " ms");

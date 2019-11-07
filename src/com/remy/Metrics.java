@@ -9,11 +9,15 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
+/*
+The purpose of this program is to parse the raw text files containing the metrics from AppD. Saves about 30 minutes per test report. On a day, saves  1 - 2 hours in report preparation. 
+The code is pushed to github on  07-Nov-2019
+*/
 public class Metrics  {
     public static void main(String[] args) throws Exception {
-        String rwdRelease = "19.6.0.1";
-        String pobsRelease = "19.6.0.1";
-        String virtUsers = "4520";
+        String rwdRelease = "19.8.1.3";
+        String pobsRelease = "19.8.1.1";
+        String virtUsers = "4270";
 
         int onCallMin = 1000000;
         int onError = 1000000;
@@ -65,8 +69,8 @@ public class Metrics  {
                    // int startIndex = input.indexOf(1)
                    // String rwdRelease = input.g
                     String version = input.trim();
-                    rwdRelease = version.substring(26,34);
-                    pobsRelease = version.substring(35,43);
+                    rwdRelease = version.substring(26,35);
+                    pobsRelease = version.substring(35,45);
                     //System.out.println(rwdRelease);
                     //System.out.println(pobsRelease);
                     break;
